@@ -40,16 +40,15 @@ class Rocket_Wpc_Plugin_Class {
 		$plugin = isset( $_REQUEST['plugin'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['plugin'] ) ) : '';
 		check_admin_referer( "activate-plugin_{$plugin}" );
 
-
-		// Database creation
-		$sql = "CREATE TABLE " . $wpdb->prefix . "linkanalyzer_links (
+		// Database creation.
+		$sql = 'CREATE TABLE ' . $wpdb->prefix . 'linkanalyzer_links (
 			link_id mediumint(8) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			link_text varchar(255) NOT NULL,
 			href varchar(255) NOT NULL
-		);";
+		);';
 
-		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-		dbDelta($sql);
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		dbDelta( $sql );
 	}
 
 	/**
@@ -77,11 +76,10 @@ class Rocket_Wpc_Plugin_Class {
 			return;
 		}
 
-		// Delete DB if plugin is uninstall
+		// Delete DB if plugin is uninstall.
 		global $wpdb;
-		$sql = "DROP TABLE " . $wpdb->prefix . "linkanalyzer_links";
-		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-		dbDelta($sql);
-
+		$sql = 'DROP TABLE' . $wpdb->prefix . 'linkanalyzer_links';
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		dbDelta( $sql );
 	}
 }
