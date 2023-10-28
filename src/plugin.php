@@ -23,6 +23,8 @@ class Rocket_Wpc_Plugin_Class {
 
 		// Register plugin lifecycle hooks.
 		register_deactivation_hook( ROCKET_CRWL_PLUGIN_FILENAME, array( $this, 'wpc_deactivate' ) );
+
+		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
 	}
 
 	/**
@@ -49,6 +51,35 @@ class Rocket_Wpc_Plugin_Class {
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( $sql );
+	}
+
+
+	/**
+	 * Callback function to add an admin menu for plugin.
+	 *
+	 * @return void
+	 */
+	public function add_admin_menu() {
+		add_menu_page(
+			'WP LinkAnalyzer',
+			'LinkAnalyzer',
+			'manage_options',
+			'link-analyzer',
+			array( $this, 'render_admin_page' )
+		);
+	}
+
+	/**
+	 * Callback function to display admin option page of plugins.
+	 *
+	 * @return void
+	 */
+	public function render_admin_page() {
+		echo '
+		<div class="wrap">
+			<h2>WP LinkAnalyzer</h2>
+
+		</div>';
 	}
 
 	/**
