@@ -2,16 +2,16 @@
 /**
  * Plugin Template
  *
- * @package     TO FILL
- * @author      Mathieu Lamiot
+ * @package     WP LinkAnalyzer
+ * @author      Haoua SOUALMIA
  * @copyright   TO FILL
  * @license     GPL-2.0-or-later
  *
  * @wordpress-plugin
- * Plugin Name: TO FILL
- * Version:     TO FILL
+ * Plugin Name: WP LinkAnalyzer
+ * Version:     1.0.0
  * Description: TO FILL
- * Author:      Mathieu Lamiot
+ * Author:      Haoua SOUALMIA
  */
 
 namespace ROCKET_WP_CRAWLER;
