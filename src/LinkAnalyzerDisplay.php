@@ -10,13 +10,14 @@ class LinkAnalyzerDisplay {
 	 */
 	public static function render_admin_page() {
 		$data_links = array();
-		if ( isset( $_GET['action'] ) && 'run' === $_GET['action'] ) {
-			$crawler = new WebCrawler();
-
-			// Call the crawl method to start crawling.
-			$data_links = $crawler->crawl();
-		} elseif ( isset( $_GET['action'] ) && 'display' === $_GET['action'] ) {
-			$data_links = self::get_data();
+		if ( isset( $_GET['action'] ) ) {
+			if ( 'run' === $_GET['action'] ) {
+				$crawler = new WebCrawler();
+				// Call the crawl method to start crawling.
+				$data_links = $crawler->crawl();
+			} elseif ( 'display' === $_GET['action'] ) {
+				$data_links = self::get_data();
+			}
 		}
 
 		echo '
@@ -27,6 +28,14 @@ class LinkAnalyzerDisplay {
 
 		if ( count( $data_links ) > 0 ) {
 			echo '<h3>Résultat du crawl</h3>';
+			if ( file_exists( WP_PLUGIN_DIR . '/wp-linkanalyzer/data/homepage.html' ) ) {
+				echo '<a href="' . esc_url( plugins_url() . '/wp-linkanalyzer/data/homepage.html' ) . '" target="_blank">Voir la page d\'accueil</a>';
+			}
+
+			if ( file_exists( WP_PLUGIN_DIR . '/wp-linkanalyzer/data/sitemap.html' ) ) {
+				echo '<a href="' . esc_url( plugins_url() . '/wp-linkanalyzer/data/sitemap.html' ) . '" target="_blank">Voir le sitemap</a>';
+			}
+
 			echo '<table class="widefat">';
 			echo '<thead>';
 			echo '<tr>';
@@ -37,9 +46,10 @@ class LinkAnalyzerDisplay {
 			echo '<tbody>';
 
 			foreach ( $data_links as $link ) {
+				$link = (array) $link;
 				echo '<tr>';
-				echo '<td>' . esc_html( $link->link_text ) . '</td>';
-				echo '<td><a href="' . esc_url( $link->href ) . '">' . esc_url( $link->href ) . '</a></td>';
+				echo '<td>' . esc_html( $link['link_text'] ) . '</td>';
+				echo '<td><a href="' . esc_url( $link['href'] ) . '">' . esc_url( $link['href'] ) . '</a></td>';
 				echo '</tr>';
 			}
 
@@ -68,7 +78,7 @@ class LinkAnalyzerDisplay {
 			return $cached_data;
 		} else {
 			// Data not found in the cache, fetch it from db.
-			$data = self::get_data_from_database();
+			$data = (array) self::get_data_from_database();
 
 			// Store found data in cache.
 			wp_cache_set( 'crawl_result', $data );
