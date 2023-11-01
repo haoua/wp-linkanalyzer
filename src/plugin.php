@@ -45,15 +45,25 @@ class Rocket_Wpc_Plugin_Class {
 		$plugin = isset( $_REQUEST['plugin'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['plugin'] ) ) : '';
 		check_admin_referer( "activate-plugin_{$plugin}" );
 
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
 		// Database creation.
-		$sql = 'CREATE TABLE ' . $wpdb->prefix . 'linkanalyzer_links (
+		$sql_links_table = 'CREATE TABLE ' . $wpdb->prefix . 'linkanalyzer_links (
 			link_id mediumint(8) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			link_text varchar(255) NOT NULL,
 			href varchar(255) NOT NULL
 		);';
 
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-		dbDelta( $sql );
+		dbDelta( $sql_links_table );
+
+		// Database creation.
+		$sql_crawl_table = 'CREATE TABLE ' . $wpdb->prefix . 'linkanalyzer_crawl (
+			crawl_id mediumint(8) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+			start_date varchar(255) NOT NULL,
+			end_date varchar(255) NOT NULL
+		);';
+
+		dbDelta( $sql_crawl_table );
 	}
 
 
