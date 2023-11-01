@@ -4,13 +4,13 @@
  *
  * @package     WP LinkAnalyzer
  * @author      Haoua SOUALMIA
- * @copyright   TO FILL
+ * @copyright   2023 Haoua SOUALMIA
  * @license     GPL-2.0-or-later
  *
  * @wordpress-plugin
  * Plugin Name: WP LinkAnalyzer
  * Version:     1.0.0
- * Description: TO FILL
+ * Description: WP LinkAnalyzer is a SEO tool for administrators. It enables you to crawl your website, analyze internal links, and create a visual sitemap to boost your site's SEO performance.
  * Author:      Haoua SOUALMIA
  */
 
