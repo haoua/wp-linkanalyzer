@@ -64,8 +64,11 @@ class WebCrawler {
 			WP_Filesystem();
 		}
 
+		$sitemap = $this->generate_html_sitemap( $internal_links );
+
 		$data_dir = WP_PLUGIN_DIR . '/wp-linkanalyzer/data/';
 		$wp_filesystem->put_contents( $data_dir . 'homepage.html', $page_content );
+		$wp_filesystem->put_contents( $data_dir . 'sitemap.html', $sitemap );
 
 		$this->store_results( $internal_links );
 
@@ -104,6 +107,8 @@ class WebCrawler {
 				wp_delete_file( $file );
 			}
 		}
+
+		wp_cache_delete( 'crawl_result' );
 	}
 
 	/**
@@ -194,5 +199,43 @@ class WebCrawler {
 		$update_where = array( 'crawl_id' => $this->crawl_id );
 
 		$this->wpdb->update( $this->wpdb->prefix . 'linkanalyzer_crawl', $data_update, $update_where );
+	}
+
+	/**
+	 * Generates an HTML sitemap from a list of internal links.
+	 *
+	 * @param 	array 	$internal_links 	An array of internal links to include in the sitemap.
+	 * @return 	string 						The generated HTML sitemap.
+	 */
+	private function generate_html_sitemap( $internal_links ) {
+		// Begin building the sitemap HTML.
+		$html = '
+			<!doctype html>
+			<html lang="en-US">
+			  <head>
+				<meta charset="utf-8" />
+				<meta name="viewport" content="width=device-width" />
+
+				<title>Sitemap</title>
+			  </head>
+
+				<body>
+					<ul>
+						Homepage
+						<ul>';
+
+		// Loop through the results and create sitemap entries.
+		foreach ( $internal_links as $link ) {
+			$html .= '<li><a href="' . esc_url( $link['href'] ) . '">' . esc_html( $link['link_text'] ) . '</a></li>';
+		}
+
+		// Close the sitemap HTML.
+		$html .= '
+						</ul>
+					</ul>
+				</body>
+			</html>';
+
+		return $html;
 	}
 }
