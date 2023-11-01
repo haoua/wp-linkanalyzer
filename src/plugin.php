@@ -11,6 +11,7 @@
 namespace ROCKET_WP_CRAWLER;
 
 require_once plugin_dir_path( __FILE__ ) . 'WebCrawler.php';
+require_once plugin_dir_path( __FILE__ ) . 'LinkAnalyzerDisplay.php';
 
 /**
  * Main plugin class. It manages initialization, install, and activations.
@@ -25,8 +26,8 @@ class Rocket_Wpc_Plugin_Class {
 
 		// Register plugin lifecycle hooks.
 		register_deactivation_hook( ROCKET_CRWL_PLUGIN_FILENAME, array( $this, 'wpc_deactivate' ) );
-
 		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_custom_admin_styles' ) );
 	}
 
 	/**
@@ -67,7 +68,7 @@ class Rocket_Wpc_Plugin_Class {
 			'LinkAnalyzer',
 			'manage_options',
 			'link-analyzer',
-			array( $this, 'render_admin_page' )
+			array( 'ROCKET_WP_CRAWLER\LinkAnalyzerDisplay', 'render_admin_page' )
 		);
 	}
 
@@ -76,7 +77,7 @@ class Rocket_Wpc_Plugin_Class {
 	 *
 	 * @return void
 	 */
-	public function render_admin_page() {
+	public function arender_admin_page() {
 		$data_links = array();
 		if ( isset( $_GET['action'] ) && 'run' === $_GET['action'] ) {
 			$crawler = new WebCrawler();
@@ -122,5 +123,12 @@ class Rocket_Wpc_Plugin_Class {
 		$sql = 'DROP TABLE' . $wpdb->prefix . 'linkanalyzer_links';
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( $sql );
+	}
+
+	/**
+	 * Enqueues custom styles for plugin
+	 */
+	public function enqueue_custom_admin_styles() {
+		wp_enqueue_style( 'custom-admin-styles', plugin_dir_url( __FILE__ ) . '/css/admin-styles.css' );
 	}
 }
