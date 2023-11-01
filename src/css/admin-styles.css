@@ -1,0 +1,59 @@
+/* Style the primary button */
+.button-primary {
+	background-color: #0073e6;
+	color: #fff;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 4px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 14px;
+	margin: 5px 2px;
+	cursor: pointer;
+}
+
+/* Style for the default WordPress button */
+.button-sec {
+	background-color: #f8f9fa;
+	padding: 10px 20px;
+	border: #f8f9fa 1px solid;
+	border-radius: 4px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 14px;
+	margin: 5px 2px;
+	cursor: pointer;
+}
+
+.button-sec:hover{
+	background-color: #e2e6ea;
+	border-color: #dae0e5;
+}
+
+
+.flex-container {
+	display: flex;
+	justify-content: space-between;
+
+}
+
+.flex-col{
+	flex: 1; /* Allow the column to grow as needed */
+}
+
+.button-class {
+	flex: 1; /* Allow the column to grow as needed */
+	text-align: right;
+}
+
+.error-warning{
+	display: inline-block;
+	color: #856404;
+	background-color: #fff3cd;
+	padding: .75rem 1.25rem;
+	margin-bottom: 1rem;
+	border: 1px solid #ffeeba;
+	border-radius: .25rem;
+}
