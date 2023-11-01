@@ -55,7 +55,6 @@ class WebCrawler {
 		$page_content = $this->fetch_content( $this->url );
 
 		$internal_links = $this->extract_internal_links( $page_content );
-
 		// Save homepage.html.
 		global $wp_filesystem;
 
@@ -69,6 +68,9 @@ class WebCrawler {
 		$wp_filesystem->put_contents( $data_dir . 'homepage.html', $page_content );
 
 		$this->store_results( $internal_links );
+
+		$this->update_finished_run();
+
 		return $internal_links;
 	}
 
@@ -173,10 +175,24 @@ class WebCrawler {
 	 */
 	private function register_run() {
 		// Data to be inserted.
-		$data_insert = array( 'start_date' => gmdate( 'Y-m-d H:i:s' ) );
+		$data_insert = array( 'start_date' => time() );
 
 		$this->wpdb->insert( $this->wpdb->prefix . 'linkanalyzer_crawl', $data_insert );
 
 		return $this->wpdb->insert_id;
+	}
+
+	/**
+	 * Updates the end date of the current crawl in the database.
+	 * Helps mark the completion of crawl.
+	 *
+	 * @return void
+	 */
+	private function update_finished_run() {
+		// Data to be updated.
+		$data_update  = array( 'end_date' => time() );
+		$update_where = array( 'crawl_id' => $this->crawl_id );
+
+		$this->wpdb->update( $this->wpdb->prefix . 'linkanalyzer_crawl', $data_update, $update_where );
 	}
 }
