@@ -10,6 +10,8 @@
 
 namespace ROCKET_WP_CRAWLER;
 
+require_once plugin_dir_path( __FILE__ ) . 'WebCrawler.php';
+
 /**
  * Main plugin class. It manages initialization, install, and activations.
  */
@@ -75,10 +77,18 @@ class Rocket_Wpc_Plugin_Class {
 	 * @return void
 	 */
 	public function render_admin_page() {
+		$data_links = array();
+		if ( isset( $_GET['action'] ) && 'run' === $_GET['action'] ) {
+			$crawler = new WebCrawler();
+
+			// Call the crawl method to start crawling.
+			$data_links = $crawler->crawl();
+		}
+
 		echo '
 		<div class="wrap">
 			<h2>WP LinkAnalyzer</h2>
-
+			<a href="http://localhost:3001/wp-admin/admin.php?page=link-analyzer&action=run">Lancer un crawl</a>
 		</div>';
 	}
 
