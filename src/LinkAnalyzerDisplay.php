@@ -10,31 +10,55 @@ class LinkAnalyzerDisplay {
 	 */
 	public static function render_admin_page() {
 		$data_links = array();
+		$error      = array();
 		if ( isset( $_GET['action'] ) ) {
 			if ( 'run' === $_GET['action'] ) {
 				$crawler = new WebCrawler();
 				// Call the crawl method to start crawling.
 				$data_links = $crawler->crawl();
+				if ( count( $data_links ) === 0 ) {
+					$error = array(
+						'level'   => 'error',
+						'details' => 'Une erreur est survenue au moment du crawl.',
+					);
+				}
 			} elseif ( 'display' === $_GET['action'] ) {
 				$data_links = self::get_data();
+				if ( count( $data_links ) === 0 ) {
+					$error = array(
+						'level'   => 'warning',
+						'details' => "Aucune information n'a été récupérée en base, avez-vous déjà lancé un crawl ?",
+					);
+				}
 			}
 		}
 
 		echo '
 		<div class="wrap">
-			<h2>WP LinkAnalyzer</h2>
-			<a href="/wp-admin/admin.php?page=link-analyzer&action=run" class="button-primary">Lancer un crawl</a>
-			<a href="/wp-admin/admin.php?page=link-analyzer&action=display" class="button-primary">Voir le résultat du dernier crawl</a>';
+			<div class="flex-container">
+				<div class="flex-col">
+					<h1>WP LinkAnalyzer</h1>
+				</div>
+				<div class="button-class">
+					<a href="/wp-admin/admin.php?page=link-analyzer&action=run" class="button-primary">Lancer un crawl</a>
+					<a href="/wp-admin/admin.php?page=link-analyzer&action=display" class="button-primary">Voir le résultat du dernier crawl</a>
+				</div>
+			</div>';
 
 		if ( count( $data_links ) > 0 ) {
-			echo '<h3>Résultat du crawl</h3>';
+
+			echo '<div class="flex-container">';
+			echo '<div class="flex-col"><h3>Résultat du crawl</h3></div>';
+			echo '<div class="button-class">';
 			if ( file_exists( WP_PLUGIN_DIR . '/wp-linkanalyzer/data/homepage.html' ) ) {
-				echo '<a href="' . esc_url( plugins_url() . '/wp-linkanalyzer/data/homepage.html' ) . '" target="_blank">Voir la page d\'accueil</a>';
+				echo '<a class="button-sec	" href="' . esc_url( plugins_url() . '/wp-linkanalyzer/data/homepage.html' ) . '" target="_blank">Voir la page d\'accueil</a>';
 			}
 
 			if ( file_exists( WP_PLUGIN_DIR . '/wp-linkanalyzer/data/sitemap.html' ) ) {
-				echo '<a href="' . esc_url( plugins_url() . '/wp-linkanalyzer/data/sitemap.html' ) . '" target="_blank">Voir le sitemap</a>';
+				echo '<a class="button-sec" href="' . esc_url( plugins_url() . '/wp-linkanalyzer/data/sitemap.html' ) . '" target="_blank">Voir le sitemap</a>';
 			}
+			echo '</div>';
+			echo '</div>';
 
 			echo '<table class="widefat">';
 			echo '<thead>';
@@ -58,6 +82,10 @@ class LinkAnalyzerDisplay {
 			echo '</div>';
 		}
 
+		if ( count( $error ) > 0 ) {
+			echo '<div class="' . esc_html( 'error-' . $error['level'] ) . '">' . esc_html( $error['details'] ) . '</div>';
+		}
+
 		echo '
 		</div>';
 	}
@@ -71,7 +99,7 @@ class LinkAnalyzerDisplay {
 	public static function get_data() {
 		global $wp_object_cache;
 		$cached_data = false;
-		// $cached_data = wp_cache_get( 'crawl_result' );
+		$cached_data = wp_cache_get( 'crawl_result' );
 
 		if ( false !== $cached_data ) {
 			// Data found in the cache.
@@ -81,7 +109,7 @@ class LinkAnalyzerDisplay {
 			$data = (array) self::get_data_from_database();
 
 			// Store found data in cache.
-			wp_cache_set( 'crawl_result', $data );
+			wp_cache_set( 'crawl_result', $data, '', 86400 );
 
 			// Return the fetched data.
 			return $data;

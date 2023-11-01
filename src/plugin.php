@@ -50,6 +50,7 @@ class Rocket_Wpc_Plugin_Class {
 		// Database creation.
 		$sql_links_table = 'CREATE TABLE ' . $wpdb->prefix . 'linkanalyzer_links (
 			link_id mediumint(8) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+			crawl_id mediumint(8) unsigned NOT NULL,
 			link_text varchar(255) NOT NULL,
 			href varchar(255) NOT NULL
 		);';
@@ -83,27 +84,6 @@ class Rocket_Wpc_Plugin_Class {
 	}
 
 	/**
-	 * Callback function to display admin option page of plugins.
-	 *
-	 * @return void
-	 */
-	public function arender_admin_page() {
-		$data_links = array();
-		if ( isset( $_GET['action'] ) && 'run' === $_GET['action'] ) {
-			$crawler = new WebCrawler();
-
-			// Call the crawl method to start crawling.
-			$data_links = $crawler->crawl();
-		}
-
-		echo '
-		<div class="wrap">
-			<h2>WP LinkAnalyzer</h2>
-			<a href="http://localhost:3001/wp-admin/admin.php?page=link-analyzer&action=run">Lancer un crawl</a>
-		</div>';
-	}
-
-	/**
 	 * Handles plugin deactivation
 	 *
 	 * @return void
@@ -130,8 +110,10 @@ class Rocket_Wpc_Plugin_Class {
 
 		// Delete DB if plugin is uninstall.
 		global $wpdb;
-		$sql = 'DROP TABLE' . $wpdb->prefix . 'linkanalyzer_links';
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		$sql = 'DROP TABLE' . $wpdb->prefix . 'linkanalyzer_links';
+		dbDelta( $sql );
+		$sql = 'DROP TABLE' . $wpdb->prefix . 'linkanalyzer_crawl';
 		dbDelta( $sql );
 	}
 
@@ -139,6 +121,6 @@ class Rocket_Wpc_Plugin_Class {
 	 * Enqueues custom styles for plugin
 	 */
 	public function enqueue_custom_admin_styles() {
-		wp_enqueue_style( 'custom-admin-styles', plugin_dir_url( __FILE__ ) . '/css/admin-styles.css' );
+		wp_enqueue_style( 'custom-admin-styles', plugin_dir_url( __FILE__ ) . '/css/admin-styles.css', array(), '2' );
 	}
 }
