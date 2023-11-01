@@ -26,7 +26,7 @@ class WebCrawler {
 	private $wpdb;
 
 	/**
-	 * Initialize the LinkAnalyzer plugin.
+	 * Initialize the LinkAnalyzer crawler.
 	 */
 	public function __construct() {
 		$this->url = get_home_url();
